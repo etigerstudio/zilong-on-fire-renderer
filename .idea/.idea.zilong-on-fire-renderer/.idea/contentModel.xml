@@ -23,6 +23,7 @@
           </e>
         </e>
         <e p="Scripts" t="Include">
+          <e p="ActorAnimationController.cs" t="Include" />
           <e p="RPGWorldBuilder.cs" t="Include" />
         </e>
       </e>
