@@ -9,14 +9,18 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/DC77650D-0349-4034-8F31-3461908BD465/d8/211d205e/Animator.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/4DCAA7A2-9F62-48C1-94B3-516304F9FE65/b6/79d0fed7/Vector3.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/ActorMovementController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/RPGWorldBuilder.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/ActorAnimationController.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
+        <option value="$PROJECT_DIR$/Assets/ActorMovementController.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/RPGWorldBuilder.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/ActorAnimationController.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/ActorMovementController.cs" />
       </list>
     </option>
   </component>
