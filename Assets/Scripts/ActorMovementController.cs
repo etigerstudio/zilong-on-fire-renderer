@@ -57,12 +57,16 @@ class ControlSequence
 }
 public class ActorMovementController : MonoBehaviour
 {
+    private RPGWorldBuilder _world;
     private ControlSequence _cs;
     private float remainingTime = 0f;
-    private Tuple<Movement, Spell> ms;
+    private Tuple<Movement, Spell> _ms;
     private float movementSpeed = 2f;
     private float angleOffset = 0f;
     private float angluarSpeed = 360f;
+    private bool dead;
+    private float deadAfter = 0f;
+    private int jumpStride = 2;
 
     private ActorAnimationController _ani;
     
@@ -70,19 +74,31 @@ public class ActorMovementController : MonoBehaviour
     void Start()
     {
         _cs = GetControlSequence();
+        _world = GameObject.Find("WorldBuilder").GetComponent<RPGWorldBuilder>();
         _ani = GetComponent<ActorAnimationController>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (dead)
+        {
+            deadAfter -= Time.deltaTime;
+            if (deadAfter <= 0)
+            {
+                _ani.SetState(false, false, false, true);
+                return;
+            }
+        }
+        
         remainingTime -= Time.deltaTime;
         if (remainingTime <= 0)
         {
             if (_cs.HasNext())
             {
-                ms = _cs.GetNext();
-                remainingTime = GetRemainingTime(ms);
+                _ms = _cs.GetNext();
+                remainingTime = GetRemainingTime(_ms);
+                HandleInteraction(_ms);
             }
             else
             {
@@ -90,9 +106,103 @@ public class ActorMovementController : MonoBehaviour
             }
         }
 
-        if (ms != null)
+        if (_ms != null)
         {
-            UpdateMovement(ms);
+            UpdateMovement(_ms);
+        }
+    }
+
+    void HandleInteraction(Tuple<Movement, Spell> ms)
+    {
+        Entity actor = _world.GetActorEntity();
+        int dx = 0, dy = 0;
+        switch (ms.Item1.type)
+        {
+            case Movement.L:
+                dx = -1;
+                break;
+            case Movement.R:
+                dx = 1;
+                break;
+            case Movement.B:
+                dy = -1;
+                break;
+            case Movement.F:
+                dy = 1;
+                break;
+            default:
+                break;
+        }
+
+        switch (ms.Item2.type)
+        {
+            case Spell.I:
+            {
+                Entity e = _world.FindEntity(actor.x + dx, actor.y + dy);
+                if (e != null)
+                {
+                    switch (e.type)
+                    {
+                        case Entity.SPIKE:
+                            dead = true;
+                            deadAfter = 0.6f;
+                            break;
+                        case Entity.BARRIER:
+                            dead = true;
+                            deadAfter = 0.4f;
+                            break;
+                    }
+                }
+
+                actor.x += dx;
+                actor.y += dy;
+                break;
+            }
+            case Spell.SLASH:
+            {
+                Entity e = _world.FindEntity(actor.x + dx, actor.y + dy);
+                if (e != null)
+                {
+                    switch (e.type)
+                    {
+                        case Entity.BARRIER:
+                            Destroy(e.obj);
+                            break;
+                    }
+                }
+                break;
+            }
+            case Spell.JUMP:
+            {
+                for (int i = 1; i <= jumpStride; i++)
+                {
+                    Entity e = _world.FindEntity(actor.x + dx * i, actor.y + dy * i);
+                    if (e != null)
+                    {
+                        switch (e.type)
+                        {
+                            case Entity.BARRIER:
+                                dead = true;
+                                deadAfter = i - 1 + 0.4f;
+                                goto Done;
+                                break;
+                            case Entity.SPIKE:
+                                if (i == jumpStride)
+                                {
+                                    dead = true;
+                                    deadAfter = i;
+                                    goto Done;
+                                }
+                                break;
+                        }
+                    }
+                }
+                
+                Done:
+                actor.x += jumpStride * dx;
+                actor.y += jumpStride * dy;
+                break;
+            }
         }
     }
     
@@ -142,20 +252,19 @@ public class ActorMovementController : MonoBehaviour
                 transform.rotation.eulerAngles.y + 360f * Time.deltaTime * factor,
                 0);
         }
-
-       
         
         switch (ms.Item2.type)
         {
             case Spell.I:
-                _ani.SetState(ms.Item1.type != Movement.I, false, false, die:false);
+                _ani.SetState(ms.Item1.type != Movement.I, false, false, false);
                 transform.position += offset;
+                
                 break;
             case Spell.SLASH:
-                _ani.SetState(false, false, true, die:false);
+                _ani.SetState(false, false, true, false);
                 break;
             case Spell.JUMP:
-                _ani.SetState(false, true, false, die:false);
+                _ani.SetState(false, true, false, false);
                 transform.position += offset;
                 break;
             case Spell.DIE:
@@ -164,38 +273,6 @@ public class ActorMovementController : MonoBehaviour
         }
     }
 
-    bool isSpike(Vector3 offset)
-    {
-        GameObject Spike = GameObject.Find("WorldRoot/Spike(Clone)");
-        foreach (Transform SpikeChild in Spike.transform)
-        {
-            if (transform.position + offset == SpikeChild.position)
-            {
-                return true;
-            }
-        
-        return true;
-
-    }
-        
-    bool isCactus(Vector3 offset)
-    {
-        GameObject Cactus = GameObject.Find("WorldRoot/cactus_1(Clone)");
-        foreach (Transform CactusChild in Cactus.transform)
-        {
-            if (transform.position + offset == CactusChild.position)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-
-        
-
-    
     float GetRemainingTime(Tuple<Movement, Spell> ms)
     {
         if (ms.Item2.type == Spell.JUMP)
@@ -211,16 +288,20 @@ public class ActorMovementController : MonoBehaviour
         ControlSequence cs = new ControlSequence();
         cs._controls = new Tuple<Movement, Spell>[]
         {
-            new Tuple<Movement, Spell>(new Movement(Movement.F), new Spell(Spell.I)), 
-            new Tuple<Movement, Spell>(new Movement(Movement.F), new Spell(Spell.I)),
-            new Tuple<Movement, Spell>(new Movement(Movement.R), new Spell(Spell.I)), 
-            new Tuple<Movement, Spell>(new Movement(Movement.F), new Spell(Spell.JUMP)), 
-            new Tuple<Movement, Spell>(new Movement(Movement.R), new Spell(Spell.SLASH)), 
-            new Tuple<Movement, Spell>(new Movement(Movement.I), new Spell(Spell.I)), 
-            new Tuple<Movement, Spell>(new Movement(Movement.I), new Spell(Spell.DIE)), 
-            new Tuple<Movement, Spell>(new Movement(Movement.I), new Spell(Spell.JUMP)), 
+            // new Tuple<Movement, Spell>(new Movement(Movement.F), new Spell(Spell.I)), 
+            // new Tuple<Movement, Spell>(new Movement(Movement.R), new Spell(Spell.I)), 
+            // new Tuple<Movement, Spell>(new Movement(Movement.F), new Spell(Spell.I)),
+            // new Tuple<Movement, Spell>(new Movement(Movement.R), new Spell(Spell.I)), 
+            // new Tuple<Movement, Spell>(new Movement(Movement.F), new Spell(Spell.JUMP)), 
+            // new Tuple<Movement, Spell>(new Movement(Movement.R), new Spell(Spell.SLASH)), 
+            // new Tuple<Movement, Spell>(new Movement(Movement.I), new Spell(Spell.I)), 
+            // new Tuple<Movement, Spell>(new Movement(Movement.I), new Spell(Spell.DIE)), 
+            // new Tuple<Movement, Spell>(new Movement(Movement.I), new Spell(Spell.JUMP)), 
             
             // new Tuple<Movement, Spell>(new Movement(Movement.I), new Spell(Spell.EXIT)), 
+            new Tuple<Movement, Spell>(new Movement(Movement.F), new Spell(Spell.JUMP)), 
+            // new Tuple<Movement, Spell>(new Movement(Movement.F), new Spell(Spell.I)),
+            // new Tuple<Movement, Spell>(new Movement(Movement.F), new Spell(Spell.SLASH)),
             
             
         };

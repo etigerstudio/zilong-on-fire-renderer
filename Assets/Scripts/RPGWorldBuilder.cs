@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-struct Entity
+public class Entity
 {
     public const string ACTOR = "ACTOR";
     public const string WALL = "WALL";
@@ -12,6 +12,7 @@ struct Entity
     public const string TREASURE = "TREASURE";
     public int x, y;
     public string type;
+    public GameObject obj;
 
     public Entity(int x, int y, string type)
     {
@@ -42,6 +43,7 @@ public class RPGWorldBuilder : MonoBehaviour
 
     private RPGWorld _world;
     private GameObject[,] _grounds;
+    private Entity _actor;
 
     // Start is called before the first frame update
     void Start()
@@ -60,34 +62,36 @@ public class RPGWorldBuilder : MonoBehaviour
     {
         // Ground
         _grounds = new GameObject[_world.width, _world.height];
-        for (int i = 0; i < _world.height; i++)
+        for (int i = 0; i < _world.width; i++)
         {
-            for (int j = 0; j < _world.width; j++)
+            for (int j = 0; j < _world.height; j++)
             {
-                _grounds[j, i] = SpawnPrefab(j, i, 0, groundPrefab);
+                _grounds[i, j] = SpawnPrefab(i, j, 0, groundPrefab);
             }
         }
 
-        foreach (Entity e in _world._entities)
+        for (int i = 0; i < _world._entities.Length; i++)
         {
+            Entity e = _world._entities[i];
             int x = e.x, y = e.y;
             switch (e.type)
             {
                 case Entity.ACTOR:
-                    SpawnPrefab(x, y, 0.55f, actorPrefab);
+                    e.obj = SpawnPrefab(x, y, 0.55f, actorPrefab);
+                    _actor = e;
                     break;
                 case Entity.WALL:
-                    SpawnPrefab(x, y, 1, wallPrefab);
+                    e.obj = SpawnPrefab(x, y, 1, wallPrefab);
                     break;
                 case Entity.BARRIER:
-                    SpawnPrefab(x, y, 0, barrierPrefab);
+                    e.obj = SpawnPrefab(x, y, 0, barrierPrefab);
                     break;
                 case Entity.SPIKE:
-                    SpawnPrefab(x, y, -1.5f, spikePrefab);
+                    e.obj = SpawnPrefab(x, y, -1.5f, spikePrefab);
                     Destroy(_grounds[x, y]);
                     break;
                 case Entity.TREASURE:
-                    SpawnPrefab(x, y, 0.5f, treasurePrefab);
+                    e.obj = SpawnPrefab(x, y, 0.5f, treasurePrefab);
                     break;
             }
         }
@@ -110,13 +114,40 @@ public class RPGWorldBuilder : MonoBehaviour
         
         world._entities = new []
         {
+            // new Entity(0, 0, Entity.ACTOR), 
+            // new Entity(0, 3, Entity.TREASURE), 
+            // new Entity(1, 2, Entity.BARRIER), 
+            // new Entity(2, 3, Entity.SPIKE),  
+            // new Entity(2, 2, Entity.WALL), 
+            
+            // new Entity(0, 0, Entity.ACTOR), 
+            // new Entity(1, 1, Entity.BARRIER), 
+            
             new Entity(0, 0, Entity.ACTOR), 
-            new Entity(0, 3, Entity.TREASURE), 
-            new Entity(1, 2, Entity.BARRIER), 
-            new Entity(2, 3, Entity.SPIKE),  
-            new Entity(2, 2, Entity.WALL), 
+            new Entity(0, 1, Entity.SPIKE), 
+            // new Entity(0, 2, Entity.BARRIER), 
         };
 
         return world;
+    }
+
+    // Find first entity encoutered
+    public Entity FindEntity(int x, int y)
+    {
+        print($"find {x} {y}");
+        foreach (Entity e in _world._entities)
+        {
+            if (e.x == x && e.y == y)
+            {
+                return e;
+            }
+        }
+
+        return null;
+    }
+
+    public Entity GetActorEntity()
+    {
+        return _actor;
     }
 }
