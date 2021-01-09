@@ -24,7 +24,9 @@ struct Spell
 {
     public const string JUMP = "JUMP";
     public const string SLASH = "SLASH";
+    public const string DIE = "DIE";
     public const string I = "I";
+  
     
     public string type;
 
@@ -140,21 +142,59 @@ public class ActorMovementController : MonoBehaviour
                 transform.rotation.eulerAngles.y + 360f * Time.deltaTime * factor,
                 0);
         }
+
+       
+        
         switch (ms.Item2.type)
         {
             case Spell.I:
-                _ani.SetState(ms.Item1.type != Movement.I, false, false);
+                _ani.SetState(ms.Item1.type != Movement.I, false, false, die:false);
                 transform.position += offset;
                 break;
             case Spell.SLASH:
-                _ani.SetState(false, false, true);
+                _ani.SetState(false, false, true, die:false);
                 break;
             case Spell.JUMP:
-                _ani.SetState(false, true, false);
+                _ani.SetState(false, true, false, die:false);
                 transform.position += offset;
+                break;
+            case Spell.DIE:
+                _ani.SetState(false, false, false, die:true);
                 break;
         }
     }
+
+    bool isSpike(Vector3 offset)
+    {
+        GameObject Spike = GameObject.Find("WorldRoot/Spike(Clone)");
+        foreach (Transform SpikeChild in Spike.transform)
+        {
+            if (transform.position + offset == SpikeChild.position)
+            {
+                return true;
+            }
+        
+        return true;
+
+    }
+        
+    bool isCactus(Vector3 offset)
+    {
+        GameObject Cactus = GameObject.Find("WorldRoot/cactus_1(Clone)");
+        foreach (Transform CactusChild in Cactus.transform)
+        {
+            if (transform.position + offset == CactusChild.position)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+        
+
     
     float GetRemainingTime(Tuple<Movement, Spell> ms)
     {
@@ -176,7 +216,13 @@ public class ActorMovementController : MonoBehaviour
             new Tuple<Movement, Spell>(new Movement(Movement.R), new Spell(Spell.I)), 
             new Tuple<Movement, Spell>(new Movement(Movement.F), new Spell(Spell.JUMP)), 
             new Tuple<Movement, Spell>(new Movement(Movement.R), new Spell(Spell.SLASH)), 
-            new Tuple<Movement, Spell>(new Movement(Movement.B), new Spell(Spell.I)), 
+            new Tuple<Movement, Spell>(new Movement(Movement.I), new Spell(Spell.I)), 
+            new Tuple<Movement, Spell>(new Movement(Movement.I), new Spell(Spell.DIE)), 
+            new Tuple<Movement, Spell>(new Movement(Movement.I), new Spell(Spell.JUMP)), 
+            
+            // new Tuple<Movement, Spell>(new Movement(Movement.I), new Spell(Spell.EXIT)), 
+            
+            
         };
         return cs;
     }
