@@ -166,7 +166,8 @@ public class ActorMovementController : MonoBehaviour
                     switch (e.type)
                     {
                         case Entity.BARRIER:
-                            Destroy(e.obj);
+                            e.obj.AddComponent<ScaleDestroyer>();
+                            _world.RemoveEntity(e);
                             break;
                     }
                 }
@@ -299,7 +300,10 @@ public class ActorMovementController : MonoBehaviour
             // new Tuple<Movement, Spell>(new Movement(Movement.I), new Spell(Spell.JUMP)), 
             
             // new Tuple<Movement, Spell>(new Movement(Movement.I), new Spell(Spell.EXIT)), 
-            new Tuple<Movement, Spell>(new Movement(Movement.F), new Spell(Spell.JUMP)), 
+            new Tuple<Movement, Spell>(new Movement(Movement.F), new Spell(Spell.SLASH)), 
+            new Tuple<Movement, Spell>(new Movement(Movement.F), new Spell(Spell.I)), 
+            new Tuple<Movement, Spell>(new Movement(Movement.R), new Spell(Spell.JUMP)), 
+            new Tuple<Movement, Spell>(new Movement(Movement.B), new Spell(Spell.I)),
             // new Tuple<Movement, Spell>(new Movement(Movement.F), new Spell(Spell.I)),
             // new Tuple<Movement, Spell>(new Movement(Movement.F), new Spell(Spell.SLASH)),
             

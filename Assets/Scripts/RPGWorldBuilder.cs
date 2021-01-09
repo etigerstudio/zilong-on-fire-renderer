@@ -12,6 +12,7 @@ public class Entity
     public const string TREASURE = "TREASURE";
     public int x, y;
     public string type;
+    public bool active;
     public GameObject obj;
 
     public Entity(int x, int y, string type)
@@ -94,6 +95,8 @@ public class RPGWorldBuilder : MonoBehaviour
                     e.obj = SpawnPrefab(x, y, 0.5f, treasurePrefab);
                     break;
             }
+
+            e.active = true;
         }
     }
 
@@ -124,7 +127,9 @@ public class RPGWorldBuilder : MonoBehaviour
             // new Entity(1, 1, Entity.BARRIER), 
             
             new Entity(0, 0, Entity.ACTOR), 
-            new Entity(0, 1, Entity.SPIKE), 
+            new Entity(0, 1, Entity.BARRIER), 
+            new Entity(1, 1, Entity.SPIKE), 
+            new Entity(2, 0, Entity.BARRIER), 
             // new Entity(0, 2, Entity.BARRIER), 
         };
 
@@ -134,10 +139,9 @@ public class RPGWorldBuilder : MonoBehaviour
     // Find first entity encoutered
     public Entity FindEntity(int x, int y)
     {
-        print($"find {x} {y}");
         foreach (Entity e in _world._entities)
         {
-            if (e.x == x && e.y == y)
+            if (e.x == x && e.y == y && e.active)
             {
                 return e;
             }
@@ -146,6 +150,11 @@ public class RPGWorldBuilder : MonoBehaviour
         return null;
     }
 
+    public void RemoveEntity(Entity e)
+    {
+        e.active = false;
+    }
+    
     public Entity GetActorEntity()
     {
         return _actor;
