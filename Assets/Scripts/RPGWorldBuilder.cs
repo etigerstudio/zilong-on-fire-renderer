@@ -29,6 +29,23 @@ class RPGWorld
     public Entity[] _entities;
 }
 
+public class SEntity    {
+    public int x { get; set; } 
+    public int y { get; set; } 
+    public string type { get; set; } 
+}
+
+public class SLevel    {
+    public int width { get; set; } 
+    public int height { get; set; } 
+    public List<SEntity> entities { get; set; } 
+}
+
+public class Root    {
+    public SLevel level { get; set; } 
+    public List<List<string>> actions { get; set; } 
+}
+
 public class RPGWorldBuilder : MonoBehaviour
 {
     
