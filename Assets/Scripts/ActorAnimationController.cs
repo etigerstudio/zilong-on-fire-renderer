@@ -11,6 +11,7 @@ public class ActorAnimationController : MonoBehaviour
     // private bool _walk = false;
     // private bool _jump = false;
     // private bool _slash = false;
+    private bool _die = false;
 
     void Start()
     {
@@ -71,11 +72,19 @@ public class ActorAnimationController : MonoBehaviour
     //     // }
     // }
 
-    public void SetState(bool walk, bool jump, bool slash)
+    public void SetState(bool walk, bool jump, bool slash, bool die)
     {
         _animator.SetBool("walk", walk);
         _animator.SetBool("jump", jump);
         _animator.SetBool("slash", slash);
-        print($"{walk} {jump} {slash}");
+        if (!_die && die)
+        {
+            _die = die;
+            _animator.SetTrigger("die");
+        }
+        
+        // _animator.SetBool("die", die);
+        // _animator.SetBool("exit", exit);
+        // print($"{walk} {jump} {slash} {die} ");
     }
 }

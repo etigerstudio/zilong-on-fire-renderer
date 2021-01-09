@@ -43,7 +43,7 @@ RenderSettings:
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 11
+  serializedVersion: 12
   m_GIWorkflowMode: 1
   m_GISettings:
     serializedVersion: 2
@@ -97,9 +97,8 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 112000000, guid: afd4bcd2b25714b7e92891d75651994f,
-    type: 2}
-  m_UseShadowmask: 1
+  m_LightingDataAsset: {fileID: 112000000, guid: afd4bcd2b25714b7e92891d75651994f, type: 2}
+  m_LightingSettings: {fileID: 0}
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -119,9 +118,54 @@ NavMeshSettings:
     manualTileSize: 0
     tileSize: 256
     accuratePlacement: 0
+    maxJobWorkers: 0
+    preserveTilesOutsideBounds: 0
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &139557230
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 139557232}
+  - component: {fileID: 139557231}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &139557231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 139557230}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d3ba2d375396034eafa4dd25f090d6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &139557232
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 139557230}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &940272807
 GameObject:
   m_ObjectHideFlags: 0
@@ -243,15 +287,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2a3ca971279f4798b7241406825411b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actorPrefab: {fileID: 1398216000232546580, guid: 950bf9d1708fa41be878fed0b4dbc2a5,
-    type: 3}
+  actorPrefab: {fileID: 1398216000232546580, guid: 950bf9d1708fa41be878fed0b4dbc2a5, type: 3}
   wallPrefab: {fileID: 1489901828273976, guid: b07fda8ae82a2924a8106d1d9fe98af1, type: 3}
-  spikePrefab: {fileID: 8781765065153573758, guid: e8345d8ea4ccb474eab71d1156449bda,
-    type: 3}
-  barrierPrefab: {fileID: 1951848887789032, guid: cb888d59568ce4141b1c25e3ef62afd2,
-    type: 3}
-  groundPrefab: {fileID: 6922815483422133756, guid: db64ed15faeb541b69a0f60d0df20e99,
-    type: 3}
+  spikePrefab: {fileID: 8781765065153573758, guid: e8345d8ea4ccb474eab71d1156449bda, type: 3}
+  barrierPrefab: {fileID: 1951848887789032, guid: cb888d59568ce4141b1c25e3ef62afd2, type: 3}
+  groundPrefab: {fileID: 6922815483422133756, guid: db64ed15faeb541b69a0f60d0df20e99, type: 3}
   treasurePrefab: {fileID: 100018, guid: 8699652aa2bb0284b95ff12b47c50975, type: 3}
   worldObject: {fileID: 1920374437}
   spacing: 2
