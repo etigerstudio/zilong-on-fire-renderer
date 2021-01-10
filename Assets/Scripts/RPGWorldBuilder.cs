@@ -29,22 +29,22 @@ class RPGWorld
     public Entity[] _entities;
 }
 
-public class SEntity    {
-    public int x { get; set; } 
-    public int y { get; set; } 
-    public string type { get; set; } 
-}
-
-public class SLevel    {
-    public int width { get; set; } 
-    public int height { get; set; } 
-    public List<SEntity> entities { get; set; } 
-}
-
-public class Root    {
-    public SLevel level { get; set; } 
-    public List<List<string>> actions { get; set; } 
-}
+// public class SEntity    {
+//     public int x { get; set; } 
+//     public int y { get; set; } 
+//     public string type { get; set; } 
+// }
+//
+// public class SLevel    {
+//     public int width { get; set; } 
+//     public int height { get; set; } 
+//     public List<SEntity> entities { get; set; } 
+// }
+//
+// public class Root    {
+//     public SLevel level { get; set; } 
+//     public List<List<string>> actions { get; set; } 
+// }
 
 public class RPGWorldBuilder : MonoBehaviour
 {
@@ -63,11 +63,17 @@ public class RPGWorldBuilder : MonoBehaviour
     private GameObject[,] _grounds;
     private Entity _actor;
 
+
+    public Level level;
+    
     // Start is called before the first frame update
     void Start()
     {
+        level = GetData.getBuild();
         _world = GetRPGWorld();
         GenerateWorld();
+       
+        // Debug.Log(level.width);
     }
 
     // Update is called once per frame
@@ -128,27 +134,35 @@ public class RPGWorldBuilder : MonoBehaviour
     
     RPGWorld GetRPGWorld()
     {
+        Entities[] entities = level.entities;
         RPGWorld world = new RPGWorld();
-        world.width = 4;
-        world.height = 4;
-        
-        world._entities = new []
+        // world.width = 4;
+        // world.height = 4;
+        world.width = level.width;
+        world.height = level.height;
+        world._entities = new Entity[entities.Length];
+        for (int i = 0; i < entities.Length; i++)
         {
-            // new Entity(0, 0, Entity.ACTOR), 
-            // new Entity(0, 3, Entity.TREASURE), 
-            // new Entity(1, 2, Entity.BARRIER), 
-            // new Entity(2, 3, Entity.SPIKE),  
-            // new Entity(2, 2, Entity.WALL), 
-            
-            // new Entity(0, 0, Entity.ACTOR), 
-            // new Entity(1, 1, Entity.BARRIER), 
-            
-            new Entity(0, 0, Entity.ACTOR), 
-            new Entity(0, 1, Entity.BARRIER), 
-            new Entity(1, 1, Entity.SPIKE), 
-            new Entity(2, 0, Entity.BARRIER), 
-            // new Entity(0, 2, Entity.BARRIER), 
-        };
+            world._entities[i] = new Entity(x: entities[i].x, y:entities[i].y, type:entities[i].type);
+        }
+        
+        // world._entities = new []
+        // {
+        //     // new Entity(0, 0, Entity.ACTOR), 
+        //     // new Entity(0, 3, Entity.TREASURE), 
+        //     // new Entity(1, 2, Entity.BARRIER), 
+        //     // new Entity(2, 3, Entity.SPIKE),  
+        //     // new Entity(2, 2, Entity.WALL), 
+        //     
+        //     // new Entity(0, 0, Entity.ACTOR), 
+        //     // new Entity(1, 1, Entity.BARRIER), 
+        //     
+        //     new Entity(0, 0, Entity.ACTOR), 
+        //     new Entity(0, 1, Entity.BARRIER), 
+        //     new Entity(1, 1, Entity.SPIKE), 
+        //     new Entity(2, 0, Entity.BARRIER), 
+        //     // new Entity(0, 2, Entity.BARRIER), 
+        // };
 
         return world;
     }
