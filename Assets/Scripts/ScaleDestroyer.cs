@@ -5,7 +5,8 @@ using UnityEngine;
 public class ScaleDestroyer : MonoBehaviour
 {
     private bool destroying;
-    private float dueTime = 0.6f;
+    // private float dueTime = 11.5f;
+    private float dueTime = 27.5f;
     private Transform _transform;
     
     // Start is called before the first frame update
@@ -30,7 +31,7 @@ public class ScaleDestroyer : MonoBehaviour
             _transform.localScale = new Vector3(1, _transform.localScale.y - 2.5f * Time.deltaTime, 1);
             if (_transform.localScale.y <= 0)
             {
-                Destroy(this);
+                Destroy(this.gameObject);
             }
         }
     }

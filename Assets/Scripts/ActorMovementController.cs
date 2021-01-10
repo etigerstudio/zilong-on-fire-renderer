@@ -114,7 +114,14 @@ public class ActorMovementController : MonoBehaviour
             }
             else
             {
-                _ani.SetState(false, false, false, false);
+                if (!dead && !won)
+                {
+                    _ani.SetState(false, false, false, true);
+                }
+                else
+                {
+                    _ani.SetState(false, false, false, false);
+                }
                 return;
             }
         }
@@ -158,7 +165,7 @@ public class ActorMovementController : MonoBehaviour
                     {
                         case Entity.SPIKE:
                             dead = true;
-                            deadAfter = 0.6f;
+                            deadAfter = 0.75f;
                             break;
                         case Entity.BARRIER:
                             dead = true;
@@ -259,7 +266,7 @@ public class ActorMovementController : MonoBehaviour
         float offsetAngleL = targetAngle - currentAngle ;
         float offsetAngleR = targetAngle - currentAngle + 360;
         float offsetAngle = offsetAngleL;
-        if (Math.Abs(offsetAngle) >= 2f)
+        if (Math.Abs(offsetAngle) >= 1f)
         {
             if (Math.Abs(offsetAngleL) > Math.Abs(offsetAngleR))
                 offsetAngle = offsetAngleR;
@@ -269,7 +276,7 @@ public class ActorMovementController : MonoBehaviour
                 factor = -1f;
             transform.rotation = Quaternion.Euler(
                 0,
-                transform.rotation.eulerAngles.y + 360f * Time.deltaTime * factor,
+                transform.rotation.eulerAngles.y + Math.Min(360f * Time.deltaTime, Math.Abs(offsetAngle)) * factor,
                 0);
         }
         
@@ -284,7 +291,18 @@ public class ActorMovementController : MonoBehaviour
                 break;
             case Spell.JUMP:
                 _ani.SetState(false, true, false, false);
-                transform.position += offset;
+                // transform.position += offset;
+                if (remainingTime > 1f)
+                {
+                    
+                transform.position += new Vector3(offset.x, 0.8f * Time.deltaTime, offset.z);
+                }
+                
+                else
+                {
+                    transform.position += new Vector3(offset.x, -0.8f * Time.deltaTime, offset.z);
+                    
+                }
                 break;
             case Spell.DIE:
                 _ani.SetState(false, false, false, true);

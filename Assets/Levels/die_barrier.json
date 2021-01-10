@@ -1,0 +1,1 @@
+{"level": {"width": 2, "height": 2, "entities": [{"x": 1, "y": 0, "type": "ACTOR"}, {"x": 1, "y": 1, "type": "BARRIER"}]}, "actions": ["IDLE WALK", "FORWARD WALK"]}
