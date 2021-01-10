@@ -6,11 +6,11 @@ using UnityEngine;
 
 struct Movement
 {
-    public const string L = "L";
-    public const string R = "R";
-    public const string F = "F";
-    public const string B = "B";
-    public const string I = "I"; // Idle
+    public const string L = "LEFTWARD";
+    public const string R = "RIGHTWARD";
+    public const string F = "FORWARD";
+    public const string B = "BACKWARD";
+    public const string I = "IDLE";
     
     public string type;
 
@@ -25,7 +25,7 @@ struct Spell
     public const string JUMP = "JUMP";
     public const string SLASH = "SLASH";
     public const string DIE = "DIE";
-    public const string I = "I";
+    public const string I = "WALK";
   
     
     public string type;
@@ -67,12 +67,13 @@ public class ActorMovementController : MonoBehaviour
     private bool dead;
     private float deadAfter = 0f;
     private int jumpStride = 2;
-
+    public string[] actions;
     private ActorAnimationController _ani;
     
     // Start is called before the first frame update
     void Start()
     {
+        actions = GetData.getActions();
         _cs = GetControlSequence();
         _world = GameObject.Find("WorldBuilder").GetComponent<RPGWorldBuilder>();
         _ani = GetComponent<ActorAnimationController>();
@@ -286,29 +287,38 @@ public class ActorMovementController : MonoBehaviour
     
     ControlSequence GetControlSequence()
     {
+        
         ControlSequence cs = new ControlSequence();
-        cs._controls = new Tuple<Movement, Spell>[]
-        {
-            // new Tuple<Movement, Spell>(new Movement(Movement.F), new Spell(Spell.I)), 
-            // new Tuple<Movement, Spell>(new Movement(Movement.R), new Spell(Spell.I)), 
-            // new Tuple<Movement, Spell>(new Movement(Movement.F), new Spell(Spell.I)),
-            // new Tuple<Movement, Spell>(new Movement(Movement.R), new Spell(Spell.I)), 
-            // new Tuple<Movement, Spell>(new Movement(Movement.F), new Spell(Spell.JUMP)), 
-            // new Tuple<Movement, Spell>(new Movement(Movement.R), new Spell(Spell.SLASH)), 
-            // new Tuple<Movement, Spell>(new Movement(Movement.I), new Spell(Spell.I)), 
-            // new Tuple<Movement, Spell>(new Movement(Movement.I), new Spell(Spell.DIE)), 
-            // new Tuple<Movement, Spell>(new Movement(Movement.I), new Spell(Spell.JUMP)), 
-            
-            // new Tuple<Movement, Spell>(new Movement(Movement.I), new Spell(Spell.EXIT)), 
-            new Tuple<Movement, Spell>(new Movement(Movement.F), new Spell(Spell.SLASH)), 
-            new Tuple<Movement, Spell>(new Movement(Movement.F), new Spell(Spell.I)), 
-            new Tuple<Movement, Spell>(new Movement(Movement.R), new Spell(Spell.JUMP)), 
-            new Tuple<Movement, Spell>(new Movement(Movement.B), new Spell(Spell.I)),
-            // new Tuple<Movement, Spell>(new Movement(Movement.F), new Spell(Spell.I)),
-            // new Tuple<Movement, Spell>(new Movement(Movement.F), new Spell(Spell.SLASH)),
-            
-            
-        };
+        cs._controls = new Tuple<Movement, Spell>[actions.Length];
+        for (int i = 0; i < actions.Length; i ++)
+        {            
+            string[] s_action = System.Text.RegularExpressions.Regex.Replace(actions[i], @"\s+", ",").Split(',');
+            string move_action = s_action[0];
+            string spell_action = s_action[1];
+            cs._controls[i] = new Tuple<Movement, Spell>(new Movement(move_action), new Spell(spell_action));
+        }
+        // cs._controls = new Tuple<Movement, Spell>[]
+        // {
+        //     // new Tuple<Movement, Spell>(new Movement(Movement.F), new Spell(Spell.I)), 
+        //     // new Tuple<Movement, Spell>(new Movement(Movement.R), new Spell(Spell.I)), 
+        //     // new Tuple<Movement, Spell>(new Movement(Movement.F), new Spell(Spell.I)),
+        //     // new Tuple<Movement, Spell>(new Movement(Movement.R), new Spell(Spell.I)), 
+        //     // new Tuple<Movement, Spell>(new Movement(Movement.F), new Spell(Spell.JUMP)), 
+        //     // new Tuple<Movement, Spell>(new Movement(Movement.R), new Spell(Spell.SLASH)), 
+        //     // new Tuple<Movement, Spell>(new Movement(Movement.I), new Spell(Spell.I)), 
+        //     // new Tuple<Movement, Spell>(new Movement(Movement.I), new Spell(Spell.DIE)), 
+        //     // new Tuple<Movement, Spell>(new Movement(Movement.I), new Spell(Spell.JUMP)), 
+        //     
+        //     // new Tuple<Movement, Spell>(new Movement(Movement.I), new Spell(Spell.EXIT)), 
+        //     new Tuple<Movement, Spell>(new Movement(Movement.F), new Spell(Spell.SLASH)), 
+        //     new Tuple<Movement, Spell>(new Movement(Movement.F), new Spell(Spell.I)), 
+        //     new Tuple<Movement, Spell>(new Movement(Movement.R), new Spell(Spell.JUMP)), 
+        //     new Tuple<Movement, Spell>(new Movement(Movement.B), new Spell(Spell.I)),
+        //     // new Tuple<Movement, Spell>(new Movement(Movement.F), new Spell(Spell.I)),
+        //     // new Tuple<Movement, Spell>(new Movement(Movement.F), new Spell(Spell.SLASH)),
+        //     
+        //     
+        // };
         return cs;
     }
 }
