@@ -66,6 +66,8 @@ public class ActorMovementController : MonoBehaviour
     private float angluarSpeed = 360f;
     private bool dead;
     private float deadAfter = 0f;
+    private bool won;
+    private float wonAfter = 0f;
     private int jumpStride = 2;
     public string[] actions;
     private ActorAnimationController _ani;
@@ -91,6 +93,15 @@ public class ActorMovementController : MonoBehaviour
                 return;
             }
         }
+        if (won)
+        {
+            wonAfter -= Time.deltaTime;
+            if (wonAfter <= 0)
+            {
+                _ani.SetState(false, false, false, false);
+                return;
+            }
+        }
         
         remainingTime -= Time.deltaTime;
         if (remainingTime <= 0)
@@ -103,6 +114,7 @@ public class ActorMovementController : MonoBehaviour
             }
             else
             {
+                _ani.SetState(false, false, false, false);
                 return;
             }
         }
@@ -151,6 +163,12 @@ public class ActorMovementController : MonoBehaviour
                         case Entity.BARRIER:
                             dead = true;
                             deadAfter = 0.4f;
+                            break;
+                        case Entity.TREASURE:
+                            won = true;
+                            wonAfter = 0.55f;
+                            StarSpawner spawner = e.obj.GetComponent<StarSpawner>();
+                            spawner.shouldSpawn = true;
                             break;
                     }
                 }
@@ -260,7 +278,6 @@ public class ActorMovementController : MonoBehaviour
             case Spell.I:
                 _ani.SetState(ms.Item1.type != Movement.I, false, false, false);
                 transform.position += offset;
-                
                 break;
             case Spell.SLASH:
                 _ani.SetState(false, false, true, false);
@@ -270,7 +287,7 @@ public class ActorMovementController : MonoBehaviour
                 transform.position += offset;
                 break;
             case Spell.DIE:
-                _ani.SetState(false, false, false, die:true);
+                _ani.SetState(false, false, false, true);
                 break;
         }
     }
@@ -310,10 +327,10 @@ public class ActorMovementController : MonoBehaviour
         //     // new Tuple<Movement, Spell>(new Movement(Movement.I), new Spell(Spell.JUMP)), 
         //     
         //     // new Tuple<Movement, Spell>(new Movement(Movement.I), new Spell(Spell.EXIT)), 
-        //     new Tuple<Movement, Spell>(new Movement(Movement.F), new Spell(Spell.SLASH)), 
-        //     new Tuple<Movement, Spell>(new Movement(Movement.F), new Spell(Spell.I)), 
-        //     new Tuple<Movement, Spell>(new Movement(Movement.R), new Spell(Spell.JUMP)), 
-        //     new Tuple<Movement, Spell>(new Movement(Movement.B), new Spell(Spell.I)),
+        //     // new Tuple<Movement, Spell>(new Movement(Movement.F), new Spell(Spell.SLASH)), 
+        //     // new Tuple<Movement, Spell>(new Movement(Movement.F), new Spell(Spell.I)), 
+        //     // new Tuple<Movement, Spell>(new Movement(Movement.R), new Spell(Spell.JUMP)), 
+        //     // new Tuple<Movement, Spell>(new Movement(Movement.B), new Spell(Spell.I)),
         //     // new Tuple<Movement, Spell>(new Movement(Movement.F), new Spell(Spell.I)),
         //     // new Tuple<Movement, Spell>(new Movement(Movement.F), new Spell(Spell.SLASH)),
         //     

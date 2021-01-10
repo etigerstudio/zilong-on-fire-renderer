@@ -27,7 +27,7 @@ public class ScaleDestroyer : MonoBehaviour
         }
         if (destroying)
         {
-            _transform.localScale = new Vector3(1, transform.localScale.y - 2.5f * Time.deltaTime, 1);
+            _transform.localScale = new Vector3(1, _transform.localScale.y - 2.5f * Time.deltaTime, 1);
             if (_transform.localScale.y <= 0)
             {
                 Destroy(this);

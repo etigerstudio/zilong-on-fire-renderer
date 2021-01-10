@@ -1319,6 +1319,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a422e7ee96b3340bf8768a1bc3251207, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentAngle: 0
 --- !u!1 &1398216000232548470
 GameObject:
   m_ObjectHideFlags: 0

@@ -29,23 +29,6 @@ class RPGWorld
     public Entity[] _entities;
 }
 
-// public class SEntity    {
-//     public int x { get; set; } 
-//     public int y { get; set; } 
-//     public string type { get; set; } 
-// }
-//
-// public class SLevel    {
-//     public int width { get; set; } 
-//     public int height { get; set; } 
-//     public List<SEntity> entities { get; set; } 
-// }
-//
-// public class Root    {
-//     public SLevel level { get; set; } 
-//     public List<List<string>> actions { get; set; } 
-// }
-
 public class RPGWorldBuilder : MonoBehaviour
 {
     
@@ -55,6 +38,7 @@ public class RPGWorldBuilder : MonoBehaviour
     public GameObject barrierPrefab;
     public GameObject groundPrefab;
     public GameObject treasurePrefab;
+    public GameObject lavaPrefab;
 
     public GameObject worldObject;
     public float spacing = 2;
@@ -89,6 +73,7 @@ public class RPGWorldBuilder : MonoBehaviour
             }
         }
 
+        // Entities
         for (int i = 0; i < _world._entities.Length; i++)
         {
             Entity e = _world._entities[i];
@@ -116,14 +101,24 @@ public class RPGWorldBuilder : MonoBehaviour
 
             e.active = true;
         }
+        
+        // Lava
+        for (int i = -2; i < _world.width + 2; i++)
+        {
+            for (int j = -2; j < _world.height + 2; j++)
+            {
+                if (i < 0 || i >= _world.width || j < 0 || j >= _world.height)
+                    SpawnPrefab(i, j, 0, lavaPrefab);
+            }
+        }
     }
 
     GameObject SpawnPrefab(float x, float y, float z, GameObject prefab)
     {
         return Instantiate(prefab, new Vector3(
-                x * spacing + (prefab == groundPrefab || prefab == spikePrefab ? 0f : 0.5f), 
+                x * spacing + (prefab == groundPrefab || prefab == spikePrefab || prefab == lavaPrefab ? 0f : 0.5f), 
                 z, 
-                y * spacing + (prefab == groundPrefab || prefab == spikePrefab ? 0f : 0.5f)),
+                y * spacing + (prefab == groundPrefab || prefab == spikePrefab || prefab == lavaPrefab ? 0f : 0.5f)),
             Quaternion.identity, worldObject.transform);
     }
     
@@ -151,14 +146,8 @@ public class RPGWorldBuilder : MonoBehaviour
             
             // new Entity(0, 0, Entity.ACTOR), 
             // new Entity(1, 1, Entity.BARRIER), 
-            //
-            // new Entity(0, 0, Entity.ACTOR), 
-            // new Entity(0, 1, Entity.BARRIER), 
-            // new Entity(1, 1, Entity.SPIKE), 
-            // new Entity(2, 0, Entity.BARRIER), 
             // new Entity(0, 2, Entity.BARRIER), 
         // };
-
         return world;
     }
 
